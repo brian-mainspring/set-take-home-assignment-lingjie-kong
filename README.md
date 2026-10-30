@@ -121,8 +121,27 @@ Read the source code and answer the following questions **in this README below t
 
 **Your answers:**
 
-> _Write your answers here._
+> _Write your answers here.
+1. What are the shortcomings of this simulation compared to a real smart garden? Where would it behave incorrectly or unrealistically?
+Temperature, humidity, light, and soil conditions are all simulated rather than modeled using real physical relationships. 
+Temperature, humidity, ventilation, and soil moisture affect one another in a real garden.
+The simulation enters a FAULT state when the battery is depleted or the orchid dies, but it does not implement recovery or degraded operation.
 
+2. The new `TemperatureController` uses a bounded random walk instead. Is this a better model? What's still wrong with it?
+A bounded random walk is an improvement because it prevents temperature from exceeding predefined limits. However it does not account for ambient temperature, heating/cooling performance, or thermal inertia. In my opinion, a simple thermal model would be more useful for testing the actual behavior of a temperature controller.
+
+3. What assumptions does the system make that would not hold for real hardware?
+The simulation assumes controllers communicate always successfully. But real hardware may experience timeouts, packet loss, or communication failures.
+Real sensors have measurement noise, calibration errors, response delays, and possible failures. Real actuators require time to respond and may not achieve their target conditions immediately.
+For a hardware test bench, I would introduce communication timeouts, fault injection, and sensor tolerance checks to make the tests more close to real operating conditions.
+
+4. Right now `simulation.py` and `pytest tests/` are both run manually. Describe how you would integrate both into a CI pipeline. What would need to change in the code or configuration to make this reliable and repeatable in automation?
+I would use a CI pipeline such as GitHub Actions or Jenkins, triggered by pull requests and changes to the main branch. It shoudl include the following:
+* Create a clean Python environment and install dependencies from requirements.txt
+* Execute the pytest suite and generate a JUnit XML test report.
+* Archive test reports, simulation logs, and telemetry data for debugging
+* Reset the hub before each test to avoid dependencies between tests
+* Use a fixed random seed to make simulation results reproducible
 ---
 
 ### Task 2 — Complete the implementation (code)

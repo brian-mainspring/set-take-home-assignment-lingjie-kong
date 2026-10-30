@@ -25,10 +25,14 @@ class FungiMonitor(BasePeripheral):
             orchid: the VanillaOrchid instance shared with the GardenHub.
         """
         self.heartbeat_counter += 1
-
+        
         # TODO: Implement fungal growth logic using the constants defined above.
         # Spores double each cycle within the growth temperature range; kill the orchid at LETHAL_SPORE_COUNT.
-        pass
+        if self.GROWTH_TEMP_MIN <= temperature <= self.GROWTH_TEMP_MAX:
+            self._spore_count *= 2 
+        
+        if orchid and self._spore_count >= LETHAL_SPORE_COUNT:
+            orchid.kill()
 
     @property
     def spore_count(self):
