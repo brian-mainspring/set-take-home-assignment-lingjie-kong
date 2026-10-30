@@ -61,3 +61,7 @@ def hub_client(garden_server):
 
 
 # Add your own fixtures below.
+@pytest.fixture(autouse=True)
+def reset_hub(hub_client):
+    response = hub_client.post(f"{BASE_URL}/reset")
+    assert response.status_code == 200

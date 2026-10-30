@@ -10,8 +10,14 @@ class PowerManager:
         Return True if power was available and has been deducted.
         Return False if the battery cannot cover the request (no deduction made).
         """
-        # TODO: Implement power consumption. Return True if power was available, False if not.
-        pass
+        if amount <= 0 or self.remaining <= 0:
+            return False
+            
+        if self.remaining >= amount:
+            self.remaining -= amount
+            return True
+        
+        return False
 
     def is_depleted(self):
         return self.remaining <= 0.0

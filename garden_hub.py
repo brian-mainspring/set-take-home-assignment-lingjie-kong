@@ -10,6 +10,7 @@ from peripherals import (
     LightController,
     SoilController,
     FungiMonitor,
+    CO2Controller,
 )
 
 app = Flask(__name__)
@@ -35,6 +36,7 @@ class GardenHub:
             "lc": LightController(),
             "sc": SoilController(),
             "fm": FungiMonitor(),
+            "co2": CO2Controller(),
         }
         self._state = HubState.DORMANT
         self._cycle = 0
@@ -63,11 +65,13 @@ class GardenHub:
             lc = self.controllers["lc"]
             sc = self.controllers["sc"]
             fm = self.controllers["fm"]
+            co2 = self.controllers["co2"]
 
             tc.update(power_manager=self.power_manager)
             hc.update(power_manager=self.power_manager)
             lc.update(power_manager=self.power_manager)
             sc.update(power_manager=self.power_manager)
+            co2.update(power_manager=self.power_manager)
             fm.update(temperature=tc.temperature, orchid=self.orchid)
 
             self.orchid.daily_check(tc.temperature)

@@ -33,10 +33,14 @@ class CO2Controller(BasePeripheral):
         self._co2_gen = SensorGenerator(random.uniform(600.0, 1000.0), self.CO2_MIN, self.CO2_MAX, 50.0)
         self._co2_ppm = self._co2_gen.value
 
-    def update(self, power_manager=None):
-        # TODO: implement following the pattern of the other peripheral controllers.
-        pass
-
+    def update(self, power_manager=None):  
+        self.heartbeat_counter += 1        
+        available = power_manager.consume("co2", 0.5)
+        if available:
+            self._co2_ppm = self._co2_gen.next()
+                
     def get_telemetry(self):
-        # TODO: implement
-        return {}
+        return {
+            "co2_heartbeat": self.heartbeat_counter,
+            "co2_ppm": round(self._co2_ppm, 1),
+        }
